@@ -135,12 +135,11 @@ void PIDGEN3::BINK1998TS::Generate(
 	 */
 
 	// s = ek;
-	BN_copy(s, c);
-	BN_copy(x, privateKey);
-	BN_mul_word(x, pHash);
+	BN_copy(s, privateKey);
+	BN_mul_word(s, pHash);
 
 	// s += c (mod n)
-	BN_mod_sub(s, s, x, genOrder, numContext);
+	BN_mod_add(s, s, c, genOrder, numContext);
 
 	BN_bn2lebinpad(s, (BYTE *)&pSignature, BN_num_bytes(s));
 	
