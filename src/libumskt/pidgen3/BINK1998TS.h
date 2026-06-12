@@ -27,6 +27,13 @@
 
 EXPORT class PIDGEN3::BINK1998 {
 public:
+	static void Pack(
+		QWORD (&pRaw)[4],
+		QWORD &pData,
+		QWORD &pHash,
+		QWORD (&pSignature)[2]
+	);
+	
     static void Generate(
             EC_GROUP *eCurve,
             EC_POINT *basePoint,
@@ -36,13 +43,6 @@ public:
                 BOOL pUpgrade,
                 char (&pKey)[35]
     );
-	
-	void PIDGEN3::BINK1998TS::Pack(
-		QWORD (&pRaw)[4],
-		QWORD &pData,
-		QWORD &pHash,
-		QWORD (&pSignature)[2]
-	);
 };
 
 #endif //UMSKT_BINK1998TS_H
