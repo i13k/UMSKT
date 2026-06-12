@@ -655,7 +655,7 @@ int CLI::TSGenerate() {
     // generate a key
     BN_sub(this->privateKey, this->genOrder, this->privateKey);
 	
-	PIDGEN3::BINK1998TS::Generate(this->eCurve, this->genPoint, this->genOrder, this->privateKey, nRaw, this->options.PID, this->tspKey);
+	PIDGEN3::BINK1998TS::Generate(this->eCurve, this->genPoint, this->genOrder, this->privateKey, nRaw, this->options.termsrvPID, this->tspKey);
 	CLI::printTSKey(this->tspKey);
 	
     if (this->options.nonewlines == false) {
