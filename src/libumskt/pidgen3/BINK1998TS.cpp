@@ -140,7 +140,7 @@ void PIDGEN3::BINK1998TS::Generate(
 
 	// s += c (mod n)
 	// BN_mod_add(s, s, c, genOrder, numContext);
-	BN_mod_sub(s, c, s, genOrder, numContext)
+	BN_mod_sub(s, c, s, genOrder, numContext);
 
 	BN_bn2lebinpad(s, (BYTE *)pSignature, BN_num_bytes(s));
 	
