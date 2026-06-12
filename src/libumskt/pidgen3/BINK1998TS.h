@@ -41,6 +41,7 @@ public:
               BIGNUM *privateKey,
                QWORD keyData,
 		 std::string PID,
+		        bool isSPK,
                 char (&pKey)[35]
     );
 };

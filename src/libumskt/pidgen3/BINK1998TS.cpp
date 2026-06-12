@@ -57,6 +57,7 @@ void PIDGEN3::BINK1998TS::Generate(
 		BIGNUM *privateKey,
 		QWORD keyData,
 		std::string PID,
+		bool isSPK,
         char (&pKey)[35]
 ) {
     BN_CTX *numContext = BN_CTX_new();
@@ -143,7 +144,11 @@ void PIDGEN3::BINK1998TS::Generate(
 	pHash &= 0x7ffffffff;
 
 	// Pack product key.
-	Pack(pRaw, keyData, pHash, pSignature);
+	if (!isSPK) Pack(pRaw, keyData, pHash, pSignature);
+	else {
+		std::string spkid_s = pid.substr(10, 6) + pid.substr(18, 5);
+		keyData = std::stoull(spkid_s.substr(0, spkid_s.find('-')));
+	}
 
 	EC_POINT_free(r);
 	BN_free(c);

@@ -72,14 +72,14 @@ void CLI::showHelp(char *argv[]) {
     fmt::print("\t-V --validate\tproduct key to validate signature\n");
     fmt::print("\t-N --nonewlines\tdisables newlines (for easier embedding in other apps)\n");
     fmt::print("\t-o --override\tdisables version check for confirmation IDs, if you need this send an issue on GitHub\n");
-    fmt::print("\t-D --nodashes\tdisables dashes in product keys and confirmation IDs (for easier copy-pasting)");
-    fmt::print("\t-TS --tsrvspk\tgenerate a Terminal Services/Remote Desktop Services SPK (Server Product Key), also known as a License Server ID (LSID)");
-    fmt::print("\t-TL --tsrvlkp\tgenerate a Terminal Services/Remote Desktop Services LKP (License Key Pack)");
-    fmt::print("\t-TP --tsrvpid\tPID, or Product ID, for Terminal Services/Remote Desktop Services SPK or LKP generation (required; eg. 00490-92005-99454-AT527)");
-    fmt::print("\t-TLq --tsrvlkp-quantity\tquantity of CALs (Client Access Licenses) to include in the LKP (default = 10)");
-    fmt::print("\t-TLp --tsrvlkp-programtype\tlicensing program type for LKP (0 = Volume, 1 = Open License, 2 = Retail Purchase; default = 2)");
-    fmt::print("\t-TLe --tsrvlkp-expiration\tvalidity (in months) of a LKP (144 = never expires; default = 144)");
-    fmt::print("\t-TLM --tsrvlkp-ver-major\tmajor version of LKP (default = 10)");
+    fmt::print("\t-D --nodashes\tdisables dashes in product keys and confirmation IDs (for easier copy-pasting)\n");
+    fmt::print("\t-TS --tsrvspk\tgenerate a Terminal Services/Remote Desktop Services SPK (Server Product Key), also known as a License Server ID (LSID)\n");
+    fmt::print("\t-TL --tsrvlkp\tgenerate a Terminal Services/Remote Desktop Services LKP (License Key Pack)\n");
+    fmt::print("\t-TP --tsrvpid\tPID, or Product ID, for Terminal Services/Remote Desktop Services SPK or LKP generation (required; eg. 00490-92005-99454-AT527)\n");
+    fmt::print("\t-TLq --tsrvlkp-quantity\tquantity of CALs (Client Access Licenses) to include in the LKP (default = 10)\n");
+    fmt::print("\t-TLp --tsrvlkp-programtype\tlicensing program type for LKP (0 = Volume, 1 = Open License, 2 = Retail Purchase; default = 2)\n");
+    fmt::print("\t-TLe --tsrvlkp-expiration\tvalidity (in months) of a LKP (144 = never expires; default = 144)\n");
+    fmt::print("\t-TLM --tsrvlkp-ver-major\tmajor version of LKP (default = 10)\n");
     fmt::print("\t-TLm --tsrvlkp-ver-minor\tminor version of LKP (default = 3)");
     fmt::print("\n");
 }
@@ -655,7 +655,7 @@ int CLI::TSGenerate() {
     // generate a key
     BN_sub(this->privateKey, this->genOrder, this->privateKey);
 	
-	PIDGEN3::BINK1998TS::Generate(this->eCurve, this->genPoint, this->genOrder, this->privateKey, nRaw, this->options.termsrvPID, this->tspKey);
+	PIDGEN3::BINK1998TS::Generate(this->eCurve, this->genPoint, this->genOrder, this->privateKey, nRaw, this->options.termsrvPID, this->options.termsrvSPK, this->tspKey);
 	CLI::printTSKey(this->tspKey);
 	
     if (this->options.nonewlines == false) {
