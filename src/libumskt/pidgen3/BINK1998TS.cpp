@@ -67,7 +67,7 @@ void PIDGEN3::BINK1998TS::Generate(
            *y = BN_new();
 
     QWORD pRaw[4]{},
-          pSignature = 0;
+          pSignature[2]{};
 	EC_POINT *r = EC_POINT_new(eCurve);
 
 	// Generate a random number c consisting of 384 bits without any constraints.
@@ -177,7 +177,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	i = 0, j = 0;
 	for (int k = 0; k < 21; k++) {
 		i = (i+1) % 256;
-		j = (j + s[i]) % 256;
+		j = (j + st[i]) % 256;
 		BYTE temp = st[i];
 		st[i] = st[j];
 		st[j] = temp;
