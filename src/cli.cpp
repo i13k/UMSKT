@@ -330,12 +330,12 @@ int CLI::parseCommandLine(int argc, char* argv[], Options* options) {
 	
 	// can't generate both a LKP and a SPK at the same time
 	if (options->termsrvLKP && options->termsrvSPK) {
-		return option->error = true;
+		return options->error = true;
 	}
 	
 	// to generate a Terminal Services key, we must have the PID
 	if ((options->termsrvLKP || options->termsrvSPK) && options->termsrvPID.empty()) {
-		return option->error = true;
+		return options->error = true;
 	}
 	
 	if (options->termsrvSPK) options->binkid = "FE";
@@ -479,7 +479,7 @@ void CLI::printTSKey(char *pk) {
                spk.substr(15,5),
                spk.substr(20,5),
                spk.substr(25,5),
-               spk.substr(30,5),);
+               spk.substr(30,5));
 }
 
 bool CLI::stripKey(const char *in_key, char out_key[PK_LENGTH]) {
