@@ -39,8 +39,8 @@ public:
             EC_POINT *basePoint,
               BIGNUM *genOrder,
               BIGNUM *privateKey,
-               DWORD pSerial,
-                BOOL pUpgrade,
+               QWORD keyData,
+		 std::string PID,
                 char (&pKey)[35]
     );
 };
