@@ -653,7 +653,7 @@ int CLI::TSGenerate() {
 	nRaw = (32ULL << 46) | (10ULL << 32) | (174ULL << 20) | (2ULL << 18) | (144ULL << 10) | (83ULL << 3) | 1ULL;
 
     // generate a key
-    BN_sub(this->privateKey, this->genOrder, this->privateKey);
+    //BN_sub(this->privateKey, this->genOrder, this->privateKey);
 	
 	PIDGEN3::BINK1998TS::Generate(this->eCurve, this->genPoint, this->genOrder, this->privateKey, nRaw, this->options.termsrvPID, this->options.termsrvSPK, this->tspKey);
 	CLI::printTSKey(this->tspKey);
