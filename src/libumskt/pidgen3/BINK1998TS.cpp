@@ -157,7 +157,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	BYTE* bRaw = (BYTE*) &pRaw;
 	BYTE bRes[21];
 	BYTE bRes20[20];
-	BYTE s[256];
+	BYTE st[256];
 	int i = 0, j = 0, pidLen = PID.size();
 	int keyLen = 2*pidLen;
 	BYTE *key = new BYTE[keyLen];
@@ -165,24 +165,24 @@ void PIDGEN3::BINK1998TS::Generate(
 		if (i % 2 == 0) key[i] = PID[i/2];
 		else key[i] = 0;
 	}
-	BYTE s[256];
-	for (i = 0; i < 256; i++) s[i] = i;
+	for (i = 0; i < 256; i++) st[i] = i;
 	
 	for (i = 0; i < 256; i++) {
-		j = (j + s[i] + key[i % keyLen]) % 256;
-		BYTE temp = s[i];
-		s[i] = s[j];
-		s[j] = temp;
+		j = (j + st[i] + key[i % keyLen]) % 256;
+		BYTE temp = st[i];
+		st[i] = st[j];
+		st[j] = temp;
 	}
+	
 	i = 0, j = 0;
 	for (int k = 0; k < 21; k++) {
 		i = (i+1) % 256;
 		j = (j + s[i]) % 256;
-		BYTE temp = s[i];
-		s[i] = s[j];
-		s[j] = temp;
-		int t = (s[i] + s[j]) % 256;
-		bRes[k] = bRaw[k] ^ s[t];
+		BYTE temp = st[i];
+		st[i] = st[j];
+		st[j] = temp;
+		int t = (st[i] + st[j]) % 256;
+		bRes[k] = bRaw[k] ^ st[t];
 	}
 	
 	delete[] key;
