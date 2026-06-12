@@ -91,7 +91,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	BN_bn2lebin(y, yBin, FIELD_BYTES);
 
 	// Assemble the SHA message.
-	memcpy((void *)&msgBuffer[0], (void *)&pData, 8);
+	memcpy((void *)&msgBuffer[0], (void *)&keyData, 8);
 	memcpy((void *)&msgBuffer[8], (void *)xBin, FIELD_BYTES);
 	memcpy((void *)&msgBuffer[8 + FIELD_BYTES], (void *)yBin, FIELD_BYTES);
 
@@ -99,17 +99,17 @@ void PIDGEN3::BINK1998TS::Generate(
 	SHA1(msgBuffer, 2*FIELD_BYTES+8, msgDigest);
 	QWORD pHash =
 		(((QWORD)(
-			((DWORD)md[4] |
-			 ((DWORD)md[5] << 8) |
-			 ((DWORD)md[6] << 16) |
-			 ((DWORD)md[7] << 24)
+			((DWORD)msgDigest[4] |
+			 ((DWORD)msgDigest[5] << 8) |
+			 ((DWORD)msgDigest[6] << 16) |
+			 ((DWORD)msgDigest[7] << 24)
 			) >> 29
 		)) << 32)
 		|
-		((DWORD)md[0] |
-		 ((DWORD)md[1] << 8) |
-		 ((DWORD)md[2] << 16) |
-		 ((DWORD)md[3] << 24));
+		((DWORD)msgDigest[0] |
+		 ((DWORD)msgDigest[1] << 8) |
+		 ((DWORD)msgDigest[2] << 16) |
+		 ((DWORD)msgDigest[3] << 24));
 
 	/*
 	 *
