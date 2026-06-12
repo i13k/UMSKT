@@ -179,7 +179,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	for (i = 0; i < 256; i++) st[i] = i;
 	
 	for (i = 0; i < 256; i++) {
-		j = (j + st[i] + key[i % keyLen]) % 256;
+		j = (j + st[i] + key[i % 16]) % 256;
 		BYTE temp = st[i];
 		st[i] = st[j];
 		st[j] = temp;
