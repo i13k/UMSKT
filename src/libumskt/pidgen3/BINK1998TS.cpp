@@ -100,7 +100,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	memcpy((void *)&msgBuffer[7 + FIELD_BYTES], (void *)yBin, FIELD_BYTES);
 
 	// pHash = SHA1(pSerial || R.x || R.y)
-	SHA1(msgBuffer, 2*FIELD_BYTES+8, msgDigest);
+	SHA1(msgBuffer, 2*FIELD_BYTES+7, msgDigest);
 	QWORD pHash =
 		(((QWORD)(
 			((DWORD)msgDigest[4] |
