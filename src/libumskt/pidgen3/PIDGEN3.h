@@ -28,6 +28,7 @@
 class PIDGEN3 {
 public:
     class BINK1998;
+	class BINK1998TS;
     class BINK2002;
 
     // util.cpp
@@ -49,6 +50,8 @@ public:
     static constexpr char pKeyCharset[] = "BCDFGHJKMPQRTVWXY2346789";
     static void unbase24(BYTE *byteSeq, const char *cdKey);
     static void base24(char *cdKey, BYTE *byteSeq);
+	static void unbase24_ts(BYTE *byteSeq, const char *cdKey);
+    static void base24_ts(char *cdKey, BYTE *byteSeq);
 };
 
 #endif //UMSKT_PIDGEN3_H

@@ -71,8 +71,16 @@ void CLI::showHelp(char *argv[]) {
     fmt::print("\t-u --upgrade\tspecifies the Product Key will be an \"Upgrade\" version\n");
     fmt::print("\t-V --validate\tproduct key to validate signature\n");
     fmt::print("\t-N --nonewlines\tdisables newlines (for easier embedding in other apps)\n");
-    fmt::print("\t-o --override\tDisables version check for confirmation IDs, if you need this send an issue on GitHub\n");
-    fmt::print("\t-D --nodashes\tDisables dashes in product keys and confirmation IDs (for easier copy-pasting)");
+    fmt::print("\t-o --override\tdisables version check for confirmation IDs, if you need this send an issue on GitHub\n");
+    fmt::print("\t-D --nodashes\tdisables dashes in product keys and confirmation IDs (for easier copy-pasting)");
+    fmt::print("\t-TS --tsrvspk\tgenerate a Terminal Services/Remote Desktop Services SPK (Server Product Key), also known as a License Server ID (LSID)");
+    fmt::print("\t-TL --tsrvlkp\tgenerate a Terminal Services/Remote Desktop Services LKP (License Key Pack)");
+    fmt::print("\t-TP --tsrvpid\tPID, or Product ID, for Terminal Services/Remote Desktop Services SPK or LKP generation (required; eg. 00490-92005-99454-AT527)");
+    fmt::print("\t-TLq --tsrvlkp-quantity\tquantity of CALs (Client Access Licenses) to include in the LKP (default = 10)");
+    fmt::print("\t-TLp --tsrvlkp-programtype\tlicensing program type for LKP (0 = Volume, 1 = Open License, 2 = Retail Purchase; default = 2)");
+    fmt::print("\t-TLe --tsrvlkp-expiration\tvalidity (in months) of a LKP (144 = never expires; default = 144)");
+    fmt::print("\t-TLM --tsrvlkp-ver-major\tmajor version of LKP (default = 10)");
+    fmt::print("\t-TLm --tsrvlkp-ver-minor\tminor version of LKP (default = 3)");
     fmt::print("\n");
 }
 
@@ -84,19 +92,27 @@ int CLI::parseCommandLine(int argc, char* argv[], Options* options) {
             "",
             "",
             "",
+			"",
             640,
             0,
             999999,
             1,
+			10,
+			2,
+			144,
+			10,
+			3,
             false,
             false,
             false,
             false,
             false,
             false,
-	    false,
-	    false,
-	    false,
+			false,
+			false,
+			false,
+			false,
+			false,
             MODE_BINK1998_GENERATE,
             WINDOWS
     };
@@ -156,18 +172,16 @@ int CLI::parseCommandLine(int argc, char* argv[], Options* options) {
                 options->serialSet = true;
                 options->serialMin = serial_min;
                 options->serialMax = serial_max;
-            }
-            else if (sscanf(argv[i + 1], "%d", &serial_min)) {
+            } else if (sscanf(argv[i + 1], "%d", &serial_min)) {
                 options->serialSet = true;
                 options->serialMin = serial_min;
                 options->serialMax = serial_min;
-            }
-            else {
+            } else {
                 options->error = true;
             }
             i++;
-	} else if (arg == "-u" || arg == "--upgrade") {
-	    options->upgrade = true;
+		} else if (arg == "-u" || arg == "--upgrade") {
+			options->upgrade = true;
         } else if (arg == "-f" || arg == "--file") {
             if (i == argc - 1) {
                 options->error = true;
@@ -190,27 +204,27 @@ int CLI::parseCommandLine(int argc, char* argv[], Options* options) {
             char *p = &mode[0];
             for (; *p; p++) {
                 *p = toupper((unsigned char)*p);
-	    }
-            p = &mode[0];
-            if (strcmp(p, "WINDOWS") == 0) {
-                options->activationMode = WINDOWS;
-	    } else if (strcmp(p, "OFFICEXP") == 0) {
-                options->activationMode = OFFICE_XP;
-	    } else if (strcmp(p, "OFFICE2K3") == 0) {
-                options->activationMode = OFFICE_2K3;
-        } else if (strcmp(p, "OFFICE2K7") == 0) {
-                options->activationMode = OFFICE_2K7;
-	    } else if (strcmp(p, "PLUSDME") == 0) {
-                options->activationMode = PLUS_DME;
-        } else if (strcmp(p, "OFFICEACC") == 0) {
-                options->activationMode = OFFICE_ACC;
-        }
-            i++;
+			}
+			p = &mode[0];
+			if (strcmp(p, "WINDOWS") == 0) {
+				options->activationMode = WINDOWS;
+			} else if (strcmp(p, "OFFICEXP") == 0) {
+				options->activationMode = OFFICE_XP;
+			} else if (strcmp(p, "OFFICE2K3") == 0) {
+				options->activationMode = OFFICE_2K3;
+			} else if (strcmp(p, "OFFICE2K7") == 0) {
+				options->activationMode = OFFICE_2K7;
+			} else if (strcmp(p, "PLUSDME") == 0) {
+				options->activationMode = PLUS_DME;
+			} else if (strcmp(p, "OFFICEACC") == 0) {
+				options->activationMode = OFFICE_ACC;
+			}
+			i++;
         } else if (arg == "-p" || arg == "--productid") {
-	    if (i == argc -1) {
-                options->error = true;
-                break;
-	    }
+			if (i == argc -1) {
+					options->error = true;
+					break;
+			}
             options->productid = argv[i+1];
             i++;
         } else if (arg == "-V" || arg == "--validate") {
@@ -222,22 +236,110 @@ int CLI::parseCommandLine(int argc, char* argv[], Options* options) {
             options->keyToCheck = argv[i+1];
             options->applicationMode = MODE_BINK1998_VALIDATE;
             i++;
-		
-	} else if (arg == "-N" || arg == "--nonewlines") {
-	    options->nonewlines = true;
-	} else if (arg == "-o" || arg == "--override") {
-	    options->overrideVersion = true;
-	} else if (arg == "-D" || arg == "--nodashes") {
-	    options->nodashes = true;
-	} else {
-            options->error = true;
-        }
+		} else if (arg == "-N" || arg == "--nonewlines") {
+			options->nonewlines = true;
+		} else if (arg == "-o" || arg == "--override") {
+			options->overrideVersion = true;
+		} else if (arg == "-D" || arg == "--nodashes") {
+			options->nodashes = true;
+		} else if (arg == "-TS" || arg == "--tsrvspk") {
+			options->termsrvSPK = true;
+		} else if (arg == "-TL" || arg == "--tsrvlkp") {
+			options->termsrvLKP = true;
+		} else if (arg == "-TP" || arg == "--tsrvpid") {
+			if (i == argc - 1) {
+                options->error = true;
+                break;
+            }
+			options->termsrvPID = argv[i+1];
+			i++;
+		} else if (arg == "-TLq" || arg == "--tsrvlkp-quantity") {
+			if (i == argc - 1) {
+				options->error = true;
+				break;
+			}
+			
+			int lkpQuantity;
+			if (!sscanf(argv[i+1], "%d", &lkpQuantity)) {
+                options->error = true;
+            } else {
+                options->lkpQuantity = lkpQuantity;
+            }
+			i++;
+		} else if (arg == "-TLp" || arg == "--tsrvlkp-programtype") {
+			if (i == argc - 1) {
+				options->error = true;
+				break;
+			}
+			
+			int lkpProgramType;
+			if (!sscanf(argv[i+1], "%d", &lkpProgramType)) {
+                options->error = true;
+            } else {
+                options->lkpProgramType = lkpProgramType;
+            }
+			i++;
+		} else if (arg == "-TLe" || arg == "--tsrvlkp-expiration") {
+			if (i == argc - 1) {
+				options->error = true;
+				break;
+			}
+			
+			int lkpExpiration;
+			if (!sscanf(argv[i+1], "%d", &lkpExpiration)) {
+                options->error = true;
+            } else {
+                options->lkpExpiration = lkpExpiration;
+            }
+			i++;
+		} else if (arg == "-TLM" || arg == "--tsrvlkp-ver-major") {
+			if (i == argc - 1) {
+				options->error = true;
+				break;
+			}
+			
+			int lkpMajor;
+			if (!sscanf(argv[i+1], "%d", &lkpMajor)) {
+                options->error = true;
+            } else {
+                options->lkpMajor = lkpMajor;
+            }
+			i++;
+		} else if (arg == "-TLm" || arg == "--tsrvlkp-ver-minor") {
+			if (i == argc - 1) {
+				options->error = true;
+				break;
+			}
+			
+			int lkpMinor;
+			if (!sscanf(argv[i+1], "%d", &lkpMinor)) {
+                options->error = true;
+            } else {
+                options->lkpMinor = lkpMinor;
+            }
+			i++;
+		} else {
+			options->error = true;
+		}
     }
 
     // make sure that a product id is entered for OFFICE_2K3 or OFFICE_2K7 IIDs
     if ((options->activationMode == OFFICE_2K3 || options->activationMode == OFFICE_2K7) && (options->productid.empty() || options->instid.empty()) ) {
         return options->error = true;
     }
+	
+	// can't generate both a LKP and a SPK at the same time
+	if (options->termsrvLKP && options->termsrvSPK) {
+		return option->error = true;
+	}
+	
+	// to generate a Terminal Services key, we must have the PID
+	if ((options->termsrvLKP || options->termsrvSPK) && options->termsrvPID.empty()) {
+		return option->error = true;
+	}
+	
+	if (options->termsrvSPK) options->binkid = "FE";
+	else if (options->termsrvLKP) options->binkid = "FF";
 
     return !options->error;
 }
@@ -360,6 +462,25 @@ void CLI::printKey(char *pk) {
                spk.substr(10,5),
                spk.substr(15,5),
                spk.substr(20,5));
+}
+
+void CLI::printTSKey(char *pk) {
+    assert(strlen(pk) >= PK_LENGTH);
+    std::string keyFormat = "{}-{}-{}-{}-{}-{}-{}";
+	
+    if (this->options.nodashes == true) {
+	keyFormat = "{}{}{}{}{}{}{}";
+    }
+	
+    std::string spk = pk;
+    fmt::print(keyFormat,
+               spk.substr(0,5),
+               spk.substr(5,5),
+               spk.substr(10,5),
+               spk.substr(15,5),
+               spk.substr(20,5),
+               spk.substr(25,5),
+               spk.substr(30,5),);
 }
 
 bool CLI::stripKey(const char *in_key, char out_key[PK_LENGTH]) {
@@ -502,9 +623,50 @@ int CLI::BINK1998Generate() {
         fmt::print("\nSuccess count: {}/{}", this->count, this->total);
     }
     if (this->options.nonewlines == false) {
-	fmt::print("\n"); 
+		fmt::print("\n"); 
     }
     return 0;
+}
+
+int CLI::TSGenerate() {
+	QWORD nRaw = 0;
+    DWORD serMin = this->options.serialMin;
+    DWORD serMax = this->options.serialMax;
+
+    // using user-provided serial
+    if ((serMin == serMax) && this->options.serialSet) {
+        // just in case, make sure it's less than 1000000
+        int serialRnd = (this->options.serialMin % 1000000);
+        nRaw += serialRnd;
+    } else {
+        // generate a random number to use as a serial
+        BIGNUM *bnrand = BN_new();
+        UMSKT::umskt_bn_rand(bnrand, 19, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY);
+
+        int oRaw;
+        char *cRaw = BN_bn2dec(bnrand);
+
+        sscanf(cRaw, "%d", &oRaw);
+        nRaw += serMin + (oRaw % (serMax - serMin + 1)); // ensure our serial is within specified range
+	    BN_free(bnrand);
+    }
+	
+	nRaw = (32ULL << 46) | (10ULL << 32) | (174ULL << 20) | (2ULL << 18) | (144ULL << 10) | (83ULL << 3) | 1ULL;
+
+    // generate a key
+    BN_sub(this->privateKey, this->genOrder, this->privateKey);
+	
+	PIDGEN3::BINK1998TS::Generate(this->eCurve, this->genPoint, this->genOrder, this->privateKey, nRaw, this->options.PID, this->tspKey);
+	CLI::printTSKey(this->tspKey);
+	
+    if (this->options.nonewlines == false) {
+		fmt::print("\n"); 
+    }
+    return 0;
+}
+
+int CLI::TSValidate() {
+	
 }
 
 int CLI::BINK2002Generate() {

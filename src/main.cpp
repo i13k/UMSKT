@@ -44,6 +44,9 @@ int main(int argc, char *argv[]) {
     switch(options.applicationMode) {
         case MODE_BINK1998_GENERATE:
             return run.BINK1998Generate();
+		
+		case MODE_TS_GENERATE:
+			return run.TSGenerate();
 
         case MODE_BINK2002_GENERATE:
             return run.BINK2002Generate();

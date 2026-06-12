@@ -84,3 +84,67 @@ void PIDGEN3::base24(char *cdKey, BYTE *byteSeq) {
 
     BN_free(z);
 }
+
+
+/* Converts from TS key to a byte sequence. */
+void PIDGEN3::unbase24_ts(BYTE *byteSeq, const char *cdKey) {
+    BYTE pDecodedKey[36]{};
+    BIGNUM *y = BN_new();
+
+    BN_zero(y);
+
+    // Remove dashes from the CD-key and put it into a Base24 byte array.
+    for (int i = 0, k = 0; i < strlen(cdKey) && k < 35; i++) {
+        for (int j = 0; j < 24; j++) {
+            if (cdKey[i] != '-' && cdKey[i] == pKeyCharset[j]) {
+                pDecodedKey[k++] = j;
+                break;
+            }
+        }
+    }
+
+    // Empty byte sequence.
+    memset(byteSeq, 0, 16);
+
+    // Calculate the weighed sum of byte array elements.
+    for (int i = 0; i < 35; i++) {
+        BN_mul_word(y, 24);
+        BN_add_word(y, pDecodedKey[i]);
+    }
+
+    // Acquire length.
+    int n = BN_num_bytes(y);
+
+    // Place the generated code into the byte sequence.
+    BN_bn2bin(y, byteSeq);
+    BN_free(y);
+
+    // Reverse the byte sequence.
+    endian(byteSeq, n);
+}
+
+/* Converts from byte sequence to the TS key. */
+void PIDGEN3::base24_ts(char *cdKey, BYTE *byteSeq) {
+    BYTE rbyteSeq[20];
+    BIGNUM *z;
+
+    // Copy byte sequence to the reversed byte sequence.
+    memcpy(rbyteSeq, byteSeq, sizeof(rbyteSeq));
+
+    // Skip trailing zeroes and reverse y.
+    int length;
+
+    for (length = 19; rbyteSeq[length] == 0; length--);
+    endian(rbyteSeq, ++length);
+
+    // Convert reversed byte sequence to BigNum z.
+    z = BN_bin2bn(rbyteSeq, length, nullptr);
+
+    // Divide z by 24 and convert the remainder to a CD-key char.
+    cdKey[35] = 0;
+
+    for (int i = 34; i >= 0; i--)
+        cdKey[i] = pKeyCharset[BN_div_word(z, 24)];
+
+    BN_free(z);
+}

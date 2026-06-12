@@ -31,6 +31,7 @@
 #include "libumskt/pidgen2/PIDGEN2.h"
 #include "libumskt/pidgen3/PIDGEN3.h"
 #include "libumskt/pidgen3/BINK1998.h"
+#include "libumskt/pidgen3/BINK1998TS.h"
 #include "libumskt/pidgen3/BINK2002.h"
 #include "libumskt/confid/confid.h"
 
@@ -51,6 +52,7 @@ enum MODE {
     MODE_CONFIRMATION_ID   = 2,
     MODE_BINK1998_VALIDATE = 3,
     MODE_BINK2002_VALIDATE = 4,
+    MODE_TS_GENERATE = 5,
 };
 
 struct Options {
@@ -59,10 +61,16 @@ struct Options {
     std::string instid;
     std::string keyToCheck;
     std::string productid;
+	std::string termsrvPID;
     int channelID;
     int serialMin;
     int serialMax;
     int numKeys;
+	int lkpQuantity;
+	int lkpProgramType;
+	int lkpExpiration;
+	int lkpMajor;
+	int lkpMinor;
     bool upgrade;
     bool serialSet;
     bool verbose;
@@ -72,6 +80,8 @@ struct Options {
     bool nonewlines;
     bool overrideVersion;
     bool nodashes;
+	bool termsrvSPK;
+	bool termsrvLKP;
 
     MODE applicationMode;
     ACTIVATION_ALGORITHM activationMode;
@@ -85,6 +95,7 @@ class CLI {
     EC_POINT *genPoint, *pubPoint;
     EC_GROUP *eCurve;
     char pKey[25];
+    char tspKey[35];
     int count, total;
 
 public:
@@ -97,6 +108,7 @@ public:
     static int validateCommandLine(Options* options, char *argv[], json *keys);
     static void printID(DWORD *pid);
     void printKey(char *pk);
+	void printTSKey(char *pk);
     static bool stripKey(const char *in_key, char out_key[PK_LENGTH]);
     static std::string readFromStdin();
 
@@ -104,6 +116,8 @@ public:
     int BINK2002Generate();
     int BINK1998Validate();
     int BINK2002Validate();
+	int TSGenerate();
+	int TSValidate();
     int ConfirmationID();
 };
 
