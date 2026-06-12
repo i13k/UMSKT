@@ -164,12 +164,18 @@ void PIDGEN3::BINK1998TS::Generate(
 	BYTE bRes20[20];
 	BYTE st[256];
 	int i = 0, j = 0, pidLen = PID.size();
-	int keyLen = 2*pidLen;
-	BYTE *key = new BYTE[keyLen];
-	for (int i = 0; i < keyLen; i++) {
-		if (i % 2 == 0) key[i] = PID[i/2];
-		else key[i] = 0;
+	int utf16Len = 2*pidLen;
+	BYTE key[16];
+	BYTE pidutf16 = new BYTE[utf16Len];
+	for (i = 0; i < utf16Len; i++) {
+		if (i % 2 == 0) pidutf16[i] = PID[i/2];
+		else pidutf16[i] = 0;
 	}
+	
+	MD5(pidutf16, utf16Len, key);
+	for (i = 5; i < 16; i++) key[i] = 0;
+	delete[] pidutf16;
+	
 	for (i = 0; i < 256; i++) st[i] = i;
 	
 	for (i = 0; i < 256; i++) {
@@ -189,8 +195,6 @@ void PIDGEN3::BINK1998TS::Generate(
 		int t = (st[i] + st[j]) % 256;
 		bRes[k] = bRaw[k] ^ st[t];
 	}
-	
-	delete[] key;
 	
 	memcpy(bRes20, bRes, 20);
 	

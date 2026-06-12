@@ -24,6 +24,7 @@
 #define UMSKT_BINK1998TS_H
 
 #include "PIDGEN3.h"
+#include <openssl/md5.h>
 
 EXPORT class PIDGEN3::BINK1998TS {
 public:
