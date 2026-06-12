@@ -28,7 +28,7 @@
 EXPORT class PIDGEN3::BINK1998TS {
 public:
 	static void Pack(
-		QWORD (&pRaw)[4],
+		QWORD (&pRaw)[3],
 		QWORD &pData,
 		QWORD &pHash,
 		QWORD (&pSignature)[2]

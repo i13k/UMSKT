@@ -30,24 +30,22 @@
 #include "BINK1998TS.h"
 
 void PIDGEN3::BINK1998TS::Pack(
-	QWORD (&pRaw)[4],
+	QWORD (&pRaw)[3],
 	QWORD &pData,
 	QWORD &pHash,
 	QWORD (&pSignature)[2]
 ) {
-	pRaw[3] =
+	pRaw[2] =
 		(pData & 0x00FFFFFFFFFFFFFFULL) |
 		(pHash << 56);
 
-	pRaw[2] =
+	pRaw[1] =
 		(pHash >> 8) |
 		(pSignature[0] << 27);
 
-	pRaw[1] =
+	pRaw[0] =
 		(pSignature[0] >> 37) |
 		(pSignature[1] << 27);
-
-	pRaw[0] = 0;
 }
 /* Generates a Windows XP-like Product Key. */
 void PIDGEN3::BINK1998TS::Generate(
@@ -67,7 +65,7 @@ void PIDGEN3::BINK1998TS::Generate(
            *x = BN_new(),
            *y = BN_new();
 
-    QWORD pRaw[4]{},
+    QWORD pRaw[3]{},
           pSignature[2]{};
 	EC_POINT *r = EC_POINT_new(eCurve);
 
