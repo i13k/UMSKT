@@ -159,22 +159,21 @@ void PIDGEN3::BINK1998TS::Generate(
     BN_CTX_free(numContext);
 	
     // Convert bytecode to Base24 TS key.
-	BYTE* bRaw = (BYTE*) &pRaw;
+	BYTE* bRaw = (BYTE*) pRaw;
 	BYTE bRes[21];
 	BYTE bRes20[20];
 	BYTE st[256];
-	BYTE i = 0, j = 0, pidLen = PID.size();
+	int i = 0, j = 0, pidLen = PID.size();
 	int keyLen = 2*pidLen;
 	BYTE *key = new BYTE[keyLen];
-	for (i = 0; i < keyLen; i++) {
+	for (int i = 0; i < keyLen; i++) {
 		if (i % 2 == 0) key[i] = PID[i/2];
 		else key[i] = 0;
 	}
 	for (i = 0; i < 256; i++) st[i] = i;
 	
 	for (i = 0; i < 256; i++) {
-		j += st[i];
-		j += key[i % keyLen];
+		j = (j + st[i] + key[i % keyLen]) % 256;
 		BYTE temp = st[i];
 		st[i] = st[j];
 		st[j] = temp;
@@ -182,12 +181,12 @@ void PIDGEN3::BINK1998TS::Generate(
 	
 	i = 0, j = 0;
 	for (int k = 0; k < 21; k++) {
-		i++;
-		j += st[i];
+		i = (i+1) % 256;
+		j = (j + st[i]) % 256;
 		BYTE temp = st[i];
 		st[i] = st[j];
 		st[j] = temp;
-		BYTE t = st[i] + st[j];
+		int t = (st[i] + st[j]) % 256;
 		bRes[k] = bRaw[k] ^ st[t];
 	}
 	
