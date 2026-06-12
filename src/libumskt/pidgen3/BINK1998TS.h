@@ -25,7 +25,7 @@
 
 #include "PIDGEN3.h"
 
-EXPORT class PIDGEN3::BINK1998 {
+EXPORT class PIDGEN3::BINK1998TS {
 public:
 	static void Pack(
 		QWORD (&pRaw)[4],
