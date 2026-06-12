@@ -166,7 +166,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	int i = 0, j = 0, pidLen = PID.size();
 	int utf16Len = 2*pidLen;
 	BYTE key[16];
-	BYTE pidutf16 = new BYTE[utf16Len];
+	BYTE* pidutf16 = new BYTE[utf16Len];
 	for (i = 0; i < utf16Len; i++) {
 		if (i % 2 == 0) pidutf16[i] = PID[i/2];
 		else pidutf16[i] = 0;
