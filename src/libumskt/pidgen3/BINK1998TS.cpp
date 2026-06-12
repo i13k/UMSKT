@@ -86,7 +86,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	EC_POINT_get_affine_coordinates(eCurve, r, x, y, numContext);
 
 	BYTE    msgDigest[SHA_DIGEST_LENGTH]{},
-			msgBuffer[2*FIELD_BYTES+8]{},
+			msgBuffer[2*FIELD_BYTES+7]{},
 			xBin[FIELD_BYTES]{},
 			yBin[FIELD_BYTES]{};
 
@@ -95,9 +95,9 @@ void PIDGEN3::BINK1998TS::Generate(
 	BN_bn2lebin(y, yBin, FIELD_BYTES);
 
 	// Assemble the SHA message.
-	memcpy((void *)&msgBuffer[0], (void *)&keyData, 8);
-	memcpy((void *)&msgBuffer[8], (void *)xBin, FIELD_BYTES);
-	memcpy((void *)&msgBuffer[8 + FIELD_BYTES], (void *)yBin, FIELD_BYTES);
+	memcpy((void *)&msgBuffer[0], (void *)&keyData, 7);
+	memcpy((void *)&msgBuffer[7], (void *)xBin, FIELD_BYTES);
+	memcpy((void *)&msgBuffer[7 + FIELD_BYTES], (void *)yBin, FIELD_BYTES);
 
 	// pHash = SHA1(pSerial || R.x || R.y)
 	SHA1(msgBuffer, 2*FIELD_BYTES+8, msgDigest);
