@@ -35,7 +35,7 @@ void PIDGEN3::BINK1998TS::Pack(
 	QWORD &pHash,
 	QWORD (&pSignature)[2]
 ) {
-	pRaw[2] =
+	pRaw[0] =
 		(pData & 0x00FFFFFFFFFFFFFFULL) |
 		(pHash << 56);
 
@@ -43,7 +43,7 @@ void PIDGEN3::BINK1998TS::Pack(
 		(pHash >> 8) |
 		(pSignature[0] << 27);
 
-	pRaw[0] =
+	pRaw[2] =
 		(pSignature[0] >> 37) |
 		(pSignature[1] << 27);
 }
@@ -64,7 +64,12 @@ void PIDGEN3::BINK1998TS::Generate(
            *s = BN_new(),
            *x = BN_new(),
            *y = BN_new();
-
+	
+	if (isSPK) {
+		std::string spkid_s = PID.substr(10, 6) + PID.substr(18, 5);
+		keyData = std::stoull(spkid_s.substr(0, spkid_s.find('-')));
+	}
+	
     QWORD pRaw[3]{},
           pSignature[2]{};
 	EC_POINT *r = EC_POINT_new(eCurve);
@@ -143,11 +148,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	pHash &= 0x7ffffffff;
 
 	// Pack product key.
-	if (!isSPK) Pack(pRaw, keyData, pHash, pSignature);
-	else {
-		std::string spkid_s = PID.substr(10, 6) + PID.substr(18, 5);
-		keyData = std::stoull(spkid_s.substr(0, spkid_s.find('-')));
-	}
+	Pack(pRaw, keyData, pHash, pSignature);
 
 	EC_POINT_free(r);
 	BN_free(c);
