@@ -146,7 +146,7 @@ void PIDGEN3::BINK1998TS::Generate(
 	// Pack product key.
 	if (!isSPK) Pack(pRaw, keyData, pHash, pSignature);
 	else {
-		std::string spkid_s = pid.substr(10, 6) + pid.substr(18, 5);
+		std::string spkid_s = PID.substr(10, 6) + PID.substr(18, 5);
 		keyData = std::stoull(spkid_s.substr(0, spkid_s.find('-')));
 	}
 

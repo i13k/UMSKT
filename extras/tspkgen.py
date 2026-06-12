@@ -96,7 +96,7 @@ def validate_tskey(pid, tskey, is_spk=True):
     ht = ((int.from_bytes(md[4:8], "little") >> 29) << 32) | (int.from_bytes(md[:4], "little"))
     
     spkid = int.from_bytes(keydata, "little") & 0x1FFFFFFFFF
-    
+    print(h, ht)
     return h == ht and (not is_spk or spkid == get_spkid(pid))
 
 def generate_tskey(pid, keydata, is_spk=True):
