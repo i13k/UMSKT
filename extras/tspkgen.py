@@ -94,8 +94,10 @@ def validate_tskey(pid, tskey, is_spk=True):
     R = E.add_points(E.multiply_point(h, K), E.multiply_point(s, G))
     md = sha1(keydata + int_to_bytes(R.x, 48) + int_to_bytes(R.y, 48)).digest()
     ht = ((int.from_bytes(md[4:8], "little") >> 29) << 32) | (int.from_bytes(md[:4], "little"))
-    
     spkid = int.from_bytes(keydata, "little") & 0x1FFFFFFFFF
+    
+    print(h, ht, spkid)
+    
     return h == ht and (not is_spk or spkid == get_spkid(pid))
 
 def generate_tskey(pid, keydata, is_spk=True):

@@ -35,19 +35,19 @@ void PIDGEN3::BINK1998TS::Pack(
 	QWORD &pHash,
 	QWORD (&pSignature)[2]
 ) {
-	pRaw[0] =
+	pRaw[3] =
 		(pData & 0x00FFFFFFFFFFFFFFULL) |
 		(pHash << 56);
 
-	pRaw[1] =
+	pRaw[2] =
 		(pHash >> 8) |
 		(pSignature[0] << 27);
 
-	pRaw[2] =
+	pRaw[1] =
 		(pSignature[0] >> 37) |
 		(pSignature[1] << 27);
 
-	pRaw[3] = 0;
+	pRaw[0] = 0;
 }
 /* Generates a Windows XP-like Product Key. */
 void PIDGEN3::BINK1998TS::Generate(
